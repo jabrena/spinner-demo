@@ -13,9 +13,9 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v2
       - name: Java with Loom support
-        uses: sormuras/setup-jdk@main
+      - uses: renatoathaydes/setup-java-sdkman@v2.x
         with:
-          website: java.net
-          feature: Loom
+          java-version: '19.ea.5.lm-open' # The SDKMAN! JDK version to use.
+          architecture: x64 # (x64 or x86) -
       - name: Build with Maven Wrapper
         run: ./mvnw verify exec:java -Dexec.mainClass="info.jab.demos.SpinnerDemo"
