@@ -13,9 +13,9 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v2
       - name: Java with Loom support
-          uses: sormuras/setup-jdk@main
-          with:
-            website: java.net
-            feature: Loom
+        uses: sormuras/setup-jdk@main
+        with:
+          website: java.net
+          feature: Loom
       - name: Build with Maven Wrapper
         run: ./mvnw verify exec:java -Dexec.mainClass="info.jab.demos.SpinnerDemo"
