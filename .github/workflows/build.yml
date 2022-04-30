@@ -13,7 +13,7 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v2
       - name: Java with Loom support
-        uses: renatoathaydes/setup-java-sdkman@v2.1.1
+        uses: renatoathaydes/setup-java-sdkman@v2.1.0
         with:
           java-version: '19.ea.5.lm-open' # The SDKMAN! JDK version to use.
           architecture: x64 # (x64 or x86) -
