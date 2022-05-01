@@ -1,6 +1,5 @@
 package info.jab.demos;
 
-import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -10,30 +9,39 @@ import java.util.concurrent.TimeUnit;
  */
 public class SpinnerDemo {
 
-    public void behaviour(Integer timeout, Boolean exception) throws InterruptedException {
-        System.out.println("Starting demo");
+    public void behaviour(Integer timeout, Boolean exception) {
+        System.out.println("Starting SpinnerDemo ExecutorService");
         System.out.println("Timeout: " + timeout);
-        System.out.println("Exception flagd: " + exception);
+        System.out.println("Exception flag: " + exception);
         System.out.println();
 
         var spinner = new Spinner();
 
-        var executorService = Executors.newScheduledThreadPool(1);
-        var result = executorService.submit(new LongProcess(timeout, exception));
-        executorService.schedule(
-            () -> {
-                result.cancel(true);
-            },
-            3,
-            TimeUnit.SECONDS
-        );
-        executorService.shutdown();
-        executorService.awaitTermination(5, TimeUnit.SECONDS);
+        try {
+            var executorService = Executors.newScheduledThreadPool(1);
+            var result = executorService.submit(new LongProcess(timeout, exception));
+            executorService.schedule(
+                () -> {
+                    result.cancel(true);
+                },
+                3,
+                TimeUnit.SECONDS
+            );
+            executorService.shutdown();
+            executorService.awaitTermination(5, TimeUnit.SECONDS);
 
-        System.out.println(String.format("Result: %s", result));
+            System.out.println(String.format("Result: %s", result));
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         spinner.stop();
 
         System.out.println("Finished demo");
+    }
+
+    public static void main(String[] args) {
+        SpinnerDemo spinnerDemo = new SpinnerDemo();
+        spinnerDemo.behaviour(2000, false);
     }
 }
