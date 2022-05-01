@@ -14,46 +14,52 @@ import java.util.concurrent.TimeoutException;
  */
 public class SpinnerDemo2 {
 
-    public void behaviour(Integer timeout, Boolean exception) throws InterruptedException {
-        System.out.println("Starting demo");
+    public void behaviour(Integer timeout, Boolean exception) {
+        System.out.println("Starting SpinnerDemo2 CompletableFuture");
         System.out.println("Timeout: " + timeout);
-        System.out.println("Exception flagd: " + exception);
+        System.out.println("Exception flag: " + exception);
         System.out.println();
 
         var spinner = new Spinner();
 
-        var executorService = Executors.newSingleThreadExecutor();
-        Callable<String> callable = Executors.callable(new LongProcess(timeout, exception), "");
-        CompletableFuture<String> cf2 = CompletableFuture
-            .supplyAsync(
-                () -> {
-                    try {
-                        return callable.call();
-                    } catch (Exception e) {
-                        return e.getMessage();
-                    }
-                },
-                executorService
-            )
-            .handle((input, ex) -> {
-                if (Objects.isNull(ex)) {
-                    return input.toString();
-                } else {
-                    return ex.getMessage();
-                }
-            });
-
         try {
+            var executorService = Executors.newSingleThreadExecutor();
+            Callable<String> callable = Executors.callable(new LongProcess(timeout, exception), "");
+            CompletableFuture<String> cf2 = CompletableFuture
+                .supplyAsync(
+                    () -> {
+                        try {
+                            return callable.call();
+                        } catch (Exception e) {
+                            return e.getMessage();
+                        }
+                    },
+                    executorService
+                )
+                .handle((input, ex) -> {
+                    if (Objects.isNull(ex)) {
+                        return input.toString();
+                    } else {
+                        return ex.getMessage();
+                    }
+                });
+
             String result = cf2.get(3, TimeUnit.SECONDS);
             System.out.println(String.format("Result: %s", result));
-        } catch (TimeoutException | ExecutionException e) {
-            e.printStackTrace();
+
+            executorService.shutdown();
+            executorService.awaitTermination(5, TimeUnit.SECONDS);
+        } catch (TimeoutException | ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
         }
-        executorService.shutdown();
-        executorService.awaitTermination(5, TimeUnit.SECONDS);
 
         spinner.stop();
 
         System.out.println("Finished demo");
+    }
+
+    public static void main(String[] args) {
+        SpinnerDemo2 spinnerDemo2 = new SpinnerDemo2();
+        spinnerDemo2.behaviour(2000, false);
     }
 }

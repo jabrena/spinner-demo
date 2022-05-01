@@ -1,5 +1,7 @@
 package info.jab.demos;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,26 +16,41 @@ class SpinnerDemo2Test {
     }
 
     @Test
-    public void given_example_when_execute_then_ok() throws Exception {
+    public void given_example_when_execute_then_ok() {
         SpinnerDemo2 spinnerDemo2 = new SpinnerDemo2();
         spinnerDemo2.behaviour(2000, false);
     }
 
     @Test
-    public void given_example_when_execute_with_exception_then_ok() throws Exception {
-        SpinnerDemo2 spinnerDemo2 = new SpinnerDemo2();
-        spinnerDemo2.behaviour(6000, true);
+    public void given_example_when_execute_with_exception_then_ok() {
+        assertThrows(
+            RuntimeException.class,
+            () -> {
+                SpinnerDemo2 spinnerDemo2 = new SpinnerDemo2();
+                spinnerDemo2.behaviour(6000, true);
+            }
+        );
     }
 
     @Test
-    public void given_example_when_execute_with_timeout_then_ok() throws Exception {
-        SpinnerDemo2 spinnerDemo2 = new SpinnerDemo2();
-        spinnerDemo2.behaviour(6000, false);
+    public void given_example_when_execute_with_timeout_then_ok() {
+        assertThrows(
+            RuntimeException.class,
+            () -> {
+                SpinnerDemo2 spinnerDemo2 = new SpinnerDemo2();
+                spinnerDemo2.behaviour(6000, false);
+            }
+        );
     }
 
     @Test
-    public void given_example_when_execute_with_timeout_and_exception_then_ok() throws Exception {
-        SpinnerDemo2 spinnerDemo2 = new SpinnerDemo2();
-        spinnerDemo2.behaviour(6000, true);
+    public void given_example_when_execute_with_timeout_and_exception_then_ok() {
+        assertThrows(
+            RuntimeException.class,
+            () -> {
+                SpinnerDemo2 spinnerDemo2 = new SpinnerDemo2();
+                spinnerDemo2.behaviour(6000, true);
+            }
+        );
     }
 }

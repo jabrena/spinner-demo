@@ -2,7 +2,6 @@ package info.jab.demos;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -16,10 +15,10 @@ import jdk.incubator.concurrent.StructuredTaskScope;
  */
 public class SpinnerDemo3 {
 
-    public void behaviour(Integer timeout, Boolean exception) throws InterruptedException, ExecutionException {
-        System.out.println("Starting demo");
+    public void behaviour(Integer timeout, Boolean exception) {
+        System.out.println("Starting SpinnerDemo3 Structural Concurrency");
         System.out.println("Timeout: " + timeout);
-        System.out.println("Exception flagd: " + exception);
+        System.out.println("Exception flag: " + exception);
         System.out.println();
 
         var spinner = new Spinner();
@@ -31,9 +30,8 @@ public class SpinnerDemo3 {
                 scope.joinUntil(Instant.now().plus(Duration.ofSeconds(3)));
 
                 System.out.println(String.format("Result: %s", future1.get()));
-            } catch (TimeoutException e) {
+            } catch (TimeoutException | CancellationException | InterruptedException | ExecutionException e) {
                 scope.shutdown();
-            } catch (CancellationException e) {
                 e.printStackTrace();
             }
         }
@@ -41,5 +39,10 @@ public class SpinnerDemo3 {
         spinner.stop();
 
         System.out.println("Finished demo");
+    }
+
+    public static void main(String[] args) {
+        SpinnerDemo3 spinnerDemo3 = new SpinnerDemo3();
+        spinnerDemo3.behaviour(2000, false);
     }
 }
