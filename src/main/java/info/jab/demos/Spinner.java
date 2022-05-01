@@ -1,10 +1,15 @@
 package info.jab.demos;
 
-import java.util.concurrent.Callable;
+class Spinner implements Runnable {
 
-class Spinner implements Callable<String>, Runnable {
-
+    private Boolean flag = false;
     private String lastLine = "";
+    private Thread t1;
+
+    public Spinner() {
+        t1 = new Thread(this);
+        t1.start();
+    }
 
     public void print(String line) {
         if (lastLine.length() > line.length()) {
@@ -44,25 +49,22 @@ class Spinner implements Callable<String>, Runnable {
         try {
             Thread.sleep(milliseconds);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            //
         }
     }
 
-    private String action() {
-        for (int i = 0; i < Integer.MAX_VALUE; i++) {
-            this.animate();
-            sleep(400);
-        }
-        return "";
-    }
-
-    @Override
-    public String call() {
-        return action();
+    public void stop() {
+        this.flag = true;
     }
 
     @Override
     public void run() {
-        action();
+        while (true) {
+            if (this.flag == true) {
+                break;
+            }
+            this.animate();
+            sleep(400);
+        }
     }
 }

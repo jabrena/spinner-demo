@@ -15,9 +15,10 @@ public class SpinnerDemo3 {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
         System.out.println("Starting demo");
 
+        var spinner = new Spinner();
+
         try (var scope = new StructuredTaskScope<>()) {
-            var future1 = scope.fork(new Spinner());
-            var future2 = scope.fork(new LongProcess());
+            var future1 = scope.fork(new LongProcess());
             try {
                 scope.joinUntil(Instant.now().plus(Duration.ofSeconds(3)));
             } catch (TimeoutException e) {
@@ -25,8 +26,10 @@ public class SpinnerDemo3 {
             }
             var end = System.currentTimeMillis();
 
-            System.out.println(String.format("Result: %s", future2.get()));
+            System.out.println(String.format("Result: %s", future1.get()));
         }
+
+        spinner.stop();
 
         System.out.println("Finished demo");
     }

@@ -4,6 +4,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The example uses CompletableFuture
@@ -11,31 +12,24 @@ import java.util.concurrent.Executors;
  */
 public class SpinnerDemo2 {
 
+    private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
+
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         System.out.println("Starting demo");
 
-        ExecutorService pool = Executors.newFixedThreadPool(2);
+        var spinner = new Spinner();
 
-        CompletableFuture<String> cf1 = CompletableFuture.supplyAsync(
-            () -> {
-                Spinner spinner = new Spinner();
-                return spinner.call();
-            },
-            pool
-        );
-        CompletableFuture<String> cf2 = CompletableFuture.supplyAsync(
-            () -> {
-                LongProcess longProcess = new LongProcess();
-                return longProcess.call();
-            },
-            pool
-        );
-        var list = CompletableFuture.anyOf(cf1, cf2);
+        CompletableFuture<String> cf2 = CompletableFuture.supplyAsync(() -> new LongProcess().call(), executorService);
+        var list = CompletableFuture.anyOf(cf2);
         var result = list.join();
+
+        executorService.shutdown();
+        executorService.awaitTermination(5, TimeUnit.SECONDS);
 
         System.out.println(String.format("Result: %s", result));
 
+        spinner.stop();
+
         System.out.println("Finished demo");
-        System.exit(0);
     }
 }
