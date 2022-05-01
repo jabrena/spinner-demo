@@ -1,19 +1,6 @@
 package info.jab.demos;
 
-import java.util.concurrent.Callable;
-
-class LongProcess implements Callable<String>, Runnable {
-
-    private String action() {
-        sleep(6000);
-        System.out.println("Long Process Performed");
-
-        try {
-            throw new RuntimeException("Katakroker");
-        } catch (RuntimeException e) {
-            return e.getMessage();
-        }
-    }
+class LongProcess implements Runnable {
 
     private void sleep(Integer milliseconds) {
         try {
@@ -24,12 +11,10 @@ class LongProcess implements Callable<String>, Runnable {
     }
 
     @Override
-    public String call() {
-        return action();
-    }
-
-    @Override
     public void run() {
-        action();
+        sleep(6000);
+        System.out.println("Long Process Performed");
+
+        throw new RuntimeException("Katakroker");
     }
 }
