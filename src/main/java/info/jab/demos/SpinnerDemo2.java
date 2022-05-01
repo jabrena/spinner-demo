@@ -1,6 +1,7 @@
 package info.jab.demos;
 
 import java.util.Objects;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -19,11 +20,21 @@ public class SpinnerDemo2 {
         var spinner = new Spinner();
 
         var executorService = Executors.newSingleThreadExecutor();
+        Callable<String> callable = Executors.callable(new LongProcess(), "");
         CompletableFuture<String> cf2 = CompletableFuture
-            .supplyAsync(() -> new LongProcess().call(), executorService)
+            .supplyAsync(
+                () -> {
+                    try {
+                        return callable.call();
+                    } catch (Exception e) {
+                        return e.getMessage();
+                    }
+                },
+                executorService
+            )
             .handle((input, exception) -> {
                 if (Objects.isNull(exception)) {
-                    return input;
+                    return input.toString();
                 } else {
                     return exception.getMessage();
                 }
