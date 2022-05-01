@@ -24,8 +24,6 @@ public class SpinnerDemo3 {
             } catch (TimeoutException e) {
                 scope.shutdown();
             }
-            var end = System.currentTimeMillis();
-
             System.out.println(String.format("Result: %s", future1.get()));
         }
 
