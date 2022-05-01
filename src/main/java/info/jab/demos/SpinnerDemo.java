@@ -1,6 +1,6 @@
 package info.jab.demos;
 
-import java.util.concurrent.ExecutionException;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -10,13 +10,16 @@ import java.util.concurrent.TimeUnit;
  */
 public class SpinnerDemo {
 
-    public static void main(String[] args) throws InterruptedException {
+    public void behaviour(Integer timeout, Boolean exception) throws InterruptedException {
         System.out.println("Starting demo");
+        System.out.println("Timeout: " + timeout);
+        System.out.println("Exception flagd: " + exception);
+        System.out.println();
 
         var spinner = new Spinner();
 
         var executorService = Executors.newScheduledThreadPool(1);
-        var result = executorService.submit((Runnable) new LongProcess());
+        var result = executorService.submit(new LongProcess(timeout, exception));
         executorService.schedule(
             () -> {
                 result.cancel(true);

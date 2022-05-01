@@ -2,6 +2,14 @@ package info.jab.demos;
 
 class LongProcess implements Runnable {
 
+    final Integer timeout;
+    final Boolean exceptionFlag;
+
+    public LongProcess(Integer timeout, Boolean exceptionFlag) {
+        this.timeout = timeout;
+        this.exceptionFlag = exceptionFlag;
+    }
+
     private void sleep(Integer milliseconds) {
         try {
             Thread.sleep(milliseconds);
@@ -12,9 +20,11 @@ class LongProcess implements Runnable {
 
     @Override
     public void run() {
-        sleep(6000);
+        sleep(timeout);
         System.out.println("Long Process Performed");
 
-        throw new RuntimeException("Katakroker");
+        if (exceptionFlag) {
+            throw new RuntimeException("Katakroker");
+        }
     }
 }

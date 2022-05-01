@@ -6,16 +6,7 @@ A demo running multiple tasks
 
 ```
 sdk env
-
-//ExecutorService
-mvn verify exec:java -Dexec.mainClass="info.jab.demos.SpinnerDemo"
-
-//CompletableFuture
-mvn verify exec:java -Dexec.mainClass="info.jab.demos.SpinnerDemo2"
-
-//Loom
-mvn clean package
-java --enable-preview -p target/spinner-demo-0.1.0-SNAPSHOT.jar -m info.jab.demos
+mvn clean test
 ```
 
 ## Others commands

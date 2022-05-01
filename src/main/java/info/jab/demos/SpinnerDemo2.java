@@ -14,13 +14,16 @@ import java.util.concurrent.TimeoutException;
  */
 public class SpinnerDemo2 {
 
-    public static void main(String[] args) throws InterruptedException, ExecutionException {
+    public void behaviour(Integer timeout, Boolean exception) throws InterruptedException {
         System.out.println("Starting demo");
+        System.out.println("Timeout: " + timeout);
+        System.out.println("Exception flagd: " + exception);
+        System.out.println();
 
         var spinner = new Spinner();
 
         var executorService = Executors.newSingleThreadExecutor();
-        Callable<String> callable = Executors.callable(new LongProcess(), "");
+        Callable<String> callable = Executors.callable(new LongProcess(timeout, exception), "");
         CompletableFuture<String> cf2 = CompletableFuture
             .supplyAsync(
                 () -> {
@@ -32,18 +35,18 @@ public class SpinnerDemo2 {
                 },
                 executorService
             )
-            .handle((input, exception) -> {
-                if (Objects.isNull(exception)) {
+            .handle((input, ex) -> {
+                if (Objects.isNull(ex)) {
                     return input.toString();
                 } else {
-                    return exception.getMessage();
+                    return ex.getMessage();
                 }
             });
 
         try {
             String result = cf2.get(3, TimeUnit.SECONDS);
             System.out.println(String.format("Result: %s", result));
-        } catch (TimeoutException e) {
+        } catch (TimeoutException | ExecutionException e) {
             e.printStackTrace();
         }
         executorService.shutdown();
