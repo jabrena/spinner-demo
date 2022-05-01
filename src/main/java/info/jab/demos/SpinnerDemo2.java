@@ -1,5 +1,6 @@
 package info.jab.demos;
 
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -12,18 +13,30 @@ import java.util.concurrent.TimeoutException;
  */
 public class SpinnerDemo2 {
 
-    public static void main(String[] args) throws InterruptedException, ExecutionException, TimeoutException {
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
         System.out.println("Starting demo");
 
         var spinner = new Spinner();
 
         var executorService = Executors.newSingleThreadExecutor();
-        CompletableFuture<String> cf2 = CompletableFuture.supplyAsync(() -> new LongProcess().call(), executorService);
-        var result = cf2.get(3, TimeUnit.SECONDS);
+        CompletableFuture<String> cf2 = CompletableFuture
+            .supplyAsync(() -> new LongProcess().call(), executorService)
+            .handle((input, exception) -> {
+                if (Objects.isNull(exception)) {
+                    return input;
+                } else {
+                    return exception.getMessage();
+                }
+            });
+
+        try {
+            String result = cf2.get(3, TimeUnit.SECONDS);
+            System.out.println(String.format("Result: %s", result));
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
         executorService.shutdown();
         executorService.awaitTermination(5, TimeUnit.SECONDS);
-
-        System.out.println(String.format("Result: %s", result));
 
         spinner.stop();
 

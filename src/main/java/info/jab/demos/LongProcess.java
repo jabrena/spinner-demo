@@ -5,7 +5,7 @@ import java.util.concurrent.Callable;
 class LongProcess implements Callable<String>, Runnable {
 
     private String action() {
-        sleep(2000);
+        sleep(6000);
         System.out.println("Long Process Performed");
 
         try {

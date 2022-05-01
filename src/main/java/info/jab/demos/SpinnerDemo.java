@@ -1,8 +1,6 @@
 package info.jab.demos;
 
-import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -12,13 +10,20 @@ import java.util.concurrent.TimeUnit;
  */
 public class SpinnerDemo {
 
-    public static void main(String[] args) throws InterruptedException, ExecutionException {
+    public static void main(String[] args) throws InterruptedException {
         System.out.println("Starting demo");
 
         var spinner = new Spinner();
 
-        var executorService = Executors.newSingleThreadExecutor();
-        var result = executorService.invokeAny(List.of(new LongProcess()));
+        var executorService = Executors.newScheduledThreadPool(1);
+        var result = executorService.submit((Runnable) new LongProcess());
+        executorService.schedule(
+            () -> {
+                result.cancel(true);
+            },
+            3,
+            TimeUnit.SECONDS
+        );
         executorService.shutdown();
         executorService.awaitTermination(5, TimeUnit.SECONDS);
 
