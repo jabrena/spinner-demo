@@ -1,30 +1,28 @@
 package info.jab.demos;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * The example uses an Executor Service
- * https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ExecutorService.html
+ * The example uses CompletableFuture
+ * https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html
  */
-public class SpinnerDemo {
+public class SpinnerDemo2 {
 
     private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-    public static void main(String[] args) throws InterruptedException, ExecutionException {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
         System.out.println("Starting demo");
 
         var spinner = new Spinner();
 
-        List<Callable<String>> taskList = new ArrayList<>();
-        taskList.add(new LongProcess());
+        CompletableFuture<String> cf2 = CompletableFuture.supplyAsync(() -> new LongProcess().call(), executorService);
+        var list = CompletableFuture.anyOf(cf2);
+        var result = list.join();
 
-        var result = executorService.invokeAny(taskList);
         executorService.shutdown();
         executorService.awaitTermination(5, TimeUnit.SECONDS);
 
