@@ -2,6 +2,7 @@ package info.jab.demos;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import jdk.incubator.concurrent.StructuredTaskScope;
@@ -21,10 +22,13 @@ public class SpinnerDemo3 {
             var future1 = scope.fork(new LongProcess());
             try {
                 scope.joinUntil(Instant.now().plus(Duration.ofSeconds(3)));
+
+                System.out.println(String.format("Result: %s", future1.get()));
             } catch (TimeoutException e) {
                 scope.shutdown();
+            } catch (CancellationException e) {
+                e.printStackTrace();
             }
-            System.out.println(String.format("Result: %s", future1.get()));
         }
 
         spinner.stop();
