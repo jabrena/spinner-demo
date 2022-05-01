@@ -12,17 +12,14 @@ import java.util.concurrent.TimeUnit;
  */
 public class SpinnerDemo2 {
 
-    private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
-
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         System.out.println("Starting demo");
 
         var spinner = new Spinner();
 
+        var executorService = Executors.newSingleThreadExecutor();
         CompletableFuture<String> cf2 = CompletableFuture.supplyAsync(() -> new LongProcess().call(), executorService);
-        var list = CompletableFuture.anyOf(cf2);
-        var result = list.join();
-
+        var result = CompletableFuture.anyOf(cf2).join();
         executorService.shutdown();
         executorService.awaitTermination(5, TimeUnit.SECONDS);
 
