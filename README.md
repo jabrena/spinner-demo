@@ -2,6 +2,10 @@
 
 A demo running multiple tasks
 
+# Gitpod support
+
+https://gitpod.io/#https://github.com/jabrena/spinner-demo
+
 ## How to run in local
 
 ```
